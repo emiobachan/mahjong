@@ -1,3 +1,5 @@
+package mahjong;
+
 import java.util.Random;
 
 public class Tile {
@@ -20,7 +22,7 @@ public class Tile {
    }
 
    public void getPastTiles() {
-      for(int i = 0; i < this.pastTile.length; ++i) {
+      for(int i = 0; i < this.pastTile.length; i++) {
          System.out.println(this.pastTile[i]);
       }
 
@@ -37,11 +39,11 @@ public class Tile {
          return "";
       } else {
          if (x / 36 == 0) {
-            number = this.man[(x + 1) % 9];
+            number = this.man[x % 9];
          } else if (x / 36 == 1) {
-            number = this.pin[(x + 5) % 9];
+            number = this.pin[x % 9];
          } else if (x / 36 == 2) {
-            number = this.sou[(x + 9) % 9];
+            number = this.sou[x % 9];
          } else {
             kind = this.jihai[(x + 4) % 7];
          }
@@ -50,17 +52,17 @@ public class Tile {
       }
    }
 
-   public int[] guessKindNumber(int tile) {
-      int kind = tile / 36;
+   public int[] guessKindNumber(int x) {
+      int kind = x / 36;
       int number;
       if (kind == 0) {
-         number = (tile + 1) % 9;
+         number = x % 9;
       } else if (kind == 1) {
-         number = (tile + 5) % 9;
+         number = x % 9;
       } else if (kind == 2) {
-         number = (tile + 9) % 9;
+         number = x % 9;
       } else {
-         number = (tile + 4) % 7;
+         number = (x + 4) % 7;
       }
 
       int[] kindNumber = new int[]{kind, number};
@@ -111,7 +113,7 @@ public class Tile {
          this.wampai[i] = temporary;
          this.pastTile[temporary] = -1;
       }
-
+      this.wampai = this.orderTiles(this.wampai);
    }
 
    public int[] getWampai() {
@@ -134,6 +136,71 @@ public class Tile {
 
       this.pastTile[card] = -1;
       return card;
+   }
+   
+   public int[] orderTiles(int[] xs) {
+	   //まずは牌の種類毎昇順に並べる→mainクラスにて動作確認済み
+      for(int i = 0; i < xs.length; i++) {
+         for(int j = i + 1; j < xs.length; j++) {
+            if (xs[i] > xs[j]) {
+               int temp = xs[i];
+               xs[i] = xs[j];
+               xs[j] = temp;
+            }
+         }
+      }
+      
+      //各種牌の中で数字の小さい順に並べる
+      //萬子
+      int i=0;
+      while(i<xs.length && xs[i]<36) {
+    	  for(int j = i + 1; j<xs.length&&xs[j]<36; j++) {
+    		  if(xs[i]%9 > xs[j]%9) {
+	  			int temp = xs[i];
+	            xs[i] = xs[j];
+	            xs[j] = temp;
+	  		  }
+           }
+    	  i++;
+      }
+      
+      //筒子
+      while(i<xs.length && xs[i]<72) {
+		  for(int j = i + 1; j<xs.length&&xs[j]<72; j++) {
+    		  if(36<=xs[i] && xs[i]%9 > xs[j]%9) {
+	  			int temp = xs[i];
+	            xs[i] = xs[j];
+	            xs[j] = temp;
+	  		  }
+           }
+      	  i++;
+      }
+      
+      //索子
+      while(i<xs.length && xs[i]<108) {
+    	  for(int j = i + 1; j<xs.length&&xs[j]<108; j++) {
+    		  if(72<=xs[i] && xs[i]%9 > xs[j]%9) {
+	  			int temp = xs[i];
+	            xs[i] = xs[j];
+	            xs[j] = temp;
+	  		  }
+           }
+      	  i++;
+      }
+      
+      //字牌
+      while(i<xs.length && 108<=xs[i]) {
+    	  for(int j = i + 1; j< xs.length&&xs[j]<=135; j++) {
+    		  if((xs[i]+4)%7 > (xs[j]+4)%7) {
+	  			int temp = xs[i];
+	            xs[i] = xs[j];
+	            xs[j] = temp;
+	  		  }
+           }
+    	  i++;
+      }
+   
+      return xs;
    }
 }
 

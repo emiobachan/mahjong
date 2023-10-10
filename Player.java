@@ -1,5 +1,4 @@
-
-import java.util.Objects;
+package mahjong;
 
 public class Player {
    private int[] tiles = new int[14];
@@ -16,15 +15,19 @@ public class Player {
    private boolean otherTempai;
 
    public Player() {
-      int i;
-      for(i = 0; i < this.tiles.length; ++i) {
+      for(int i = 0; i < this.tiles.length; ++i) {
          this.tiles[i] = -1;
       }
 
-      for(i = 0; i < this.discardedTiles.length; ++i) {
+      for(int i = 0; i < this.discardedTiles.length; ++i) {
          this.discardedTiles[i] = -1;
       }
 
+      for(int i = 0; i < this.furo.length; ++i) {
+    	  for(int j=0;j<this.furo[i].length;j++) {
+    		  this.furo[i][j] = -1;
+    	  }
+       }
    }
 
    public boolean isCalledChiUp() {
@@ -80,7 +83,8 @@ public class Player {
    }
 
    public void setTiles(int[] tiles) {
-      this.tiles = this.orderTiles(tiles);
+	   Tile tile = new Tile();
+      this.tiles = tile.orderTiles(tiles);
    }
 
    public int[] getDiscardedTiles() {
@@ -103,29 +107,34 @@ public class Player {
       this.wind = wind;
    }
 
-   private int[] orderTiles(int[] xs) {
-      for(int i = 0; i < xs.length; ++i) {
-         for(int j = i + 1; j < xs.length; ++j) {
-            if (xs[i] > xs[j]) {
-               int temp = xs[i];
-               xs[i] = xs[j];
-               xs[j] = temp;
-            }
-         }
-      }
-
-      return xs;
-   }
+   
 
    public void printTiles() {
       Tile printTile = new Tile();
 
       for(int i = 0; i < this.tiles.length; ++i) {
-         System.out.println(printTile.guessTile(this.tiles[i]));
+    	  //副露配列に値が入っている時、表示を変える
+    	  //手配配列の中の副露配列と一致する牌は一致しない牌を並べた後に牌を並べる
+		 if(!furo[0].equals(null)) {
+			 
+		 }
+         System.out.print(printTile.guessTile(this.tiles[i]));
       }
+      System.out.print("\n");
 
    }
 
+   public int discardedTileParseInt(String tile) {
+	   int discardedTileInt = -1;
+	   Tile tiletile = new Tile();
+	   for(int j = 0; j < this.getTiles().length; j++) {
+			if (tiletile.guessTile(this.getTile(j)).equals(tile)) {
+				discardedTileInt = this.getTile(j);
+				break;
+			}
+		}
+	   return discardedTileInt;
+   }
    public void discardedTiles(int[] kindNumber) {
       Tile tile = new Tile();
 
@@ -145,14 +154,17 @@ public class Player {
 
       for(int i = 0; i < this.tiles.length; ++i) {
          if (tile.guessKindNumber(this.getTile(i))[0] == 0) {
-            int var10000 = tile.guessKindNumber(this.getTile(i))[1];
+            discarded = tile.guessKindNumber(this.getTile(i))[1];
          }
       }
 
       return discarded;
    }
 
-   public int[] chiCheckUnder(int[] kindNumber) {
+   //他家が4捨てた時に手配の56で鳴く
+   public String[] chiCheckUnder(int[] kindNumber) {
+	  String[] ansChiUnder = new String[] {"",""};
+	  //
       int[] chiUnder = new int[]{-1, -1};
       Tile tile = new Tile();
 
@@ -160,17 +172,18 @@ public class Player {
          if (kindNumber[0] != 3 && tile.guessKindNumber(this.tiles[i])[0] == kindNumber[0] && tile.guessKindNumber(this.tiles[i])[1] == kindNumber[1] + 1) {
             for(int j = 0; j < this.tiles.length; ++j) {
                if (tile.guessKindNumber(this.tiles[j])[0] == kindNumber[0] && tile.guessKindNumber(this.tiles[j])[1] == kindNumber[1] + 2) {
-                  chiUnder[0] = tile.guessKindNumber(this.tiles[i])[1];
-                  chiUnder[1] = tile.guessKindNumber(this.tiles[j])[1];
+                  ansChiUnder[0] = tile.guessTile(chiUnder[0] = this.tiles[i]);
+                  ansChiUnder[1] = tile.guessTile(chiUnder[1] = this.tiles[j]);
                }
             }
          }
       }
 
-      return chiUnder;
+      return ansChiUnder;
    }
 
-   public int[] chiCheckPen(int[] kindNumber) {
+   public String[] chiCheckPen(int[] kindNumber) {
+	   String[] ansChiPen = new String[] {"",""};
       int[] chiPen = new int[]{-1, -1};
       Tile tile = new Tile();
 
@@ -178,35 +191,37 @@ public class Player {
          if (kindNumber[0] != 3 && tile.guessKindNumber(this.tiles[i])[0] == kindNumber[0] && tile.guessKindNumber(this.tiles[i])[1] == kindNumber[1] + 1) {
             for(int j = 0; j < this.tiles.length; ++j) {
                if (tile.guessKindNumber(this.tiles[j])[0] == kindNumber[0] && tile.guessKindNumber(this.tiles[j])[1] == kindNumber[1] - 1) {
-                  chiPen[0] = tile.guessKindNumber(this.tiles[i])[1];
-                  chiPen[1] = tile.guessKindNumber(this.tiles[j])[1];
+            	   ansChiPen[0] = tile.guessTile(chiPen[0] = this.tiles[i]);
+            	   ansChiPen[1] = tile.guessTile(chiPen[1] = this.tiles[j]);
                }
             }
          }
       }
 
-      return chiPen;
+      return ansChiPen;
    }
 
-   public int[] chiCheckUpper(int[] kindNumber) {
+   public String[] chiCheckUpper(int[] kindNumber) {
+	  String[] ansChiUpper = new String[] {"",""};
       int[] chiUpper = new int[]{-1, -1};
       Tile tile = new Tile();
 
       for(int i = 0; i < this.tiles.length; ++i) {
-         if (kindNumber[0] == 0 && tile.guessKindNumber(this.tiles[i])[0] == kindNumber[0] && tile.guessKindNumber(this.tiles[i])[1] == kindNumber[1] - 2) {
+         if (kindNumber[0] != 3 && tile.guessKindNumber(this.tiles[i])[0] == kindNumber[0] && tile.guessKindNumber(this.tiles[i])[1] == kindNumber[1] - 2) {
             for(int j = 0; j < this.tiles.length; ++j) {
                if (tile.guessKindNumber(this.tiles[j])[0] == kindNumber[0] && tile.guessKindNumber(this.tiles[j])[1] == kindNumber[1] - 1) {
-                  chiUpper[0] = tile.guessKindNumber(this.tiles[i])[1];
-                  chiUpper[1] = tile.guessKindNumber(this.tiles[j])[1];
+            	   ansChiUpper[0] = tile.guessTile(chiUpper[0] = this.tiles[i]);
+            	   ansChiUpper[1] = tile.guessTile(chiUpper[1] = this.tiles[j]);
                }
             }
          }
       }
 
-      return chiUpper;
+      return ansChiUpper;
    }
 
-   public int ponCheck(int[] kindNumber) {
+   public String ponCheck(int[] kindNumber) {
+	   String ans = "";
       int pon = -1;
       int ponCountMZ = 0;
       int ponCountPZ = 0;
@@ -225,15 +240,19 @@ public class Player {
             pon = i;
          }
       }
+      
+      
 
       if (ponCountMZ < 2 && ponCountPZ < 2 && ponCountSZ < 2) {
-         return pon;
+         return ans;
       } else {
-         return this.tiles[pon];
+    	  ans = tile.guessTile(this.tiles[pon]);
+         return ans;
       }
    }
 
-   public int kanCheck(int[] kindNumber) {
+   public String kanCheck(int[] kindNumber) {
+	   String ans = "";
       int kan = -1;
       int kanCountMZ = 0;
       int kanCountPZ = 0;
@@ -254,26 +273,38 @@ public class Player {
       }
 
       if (kanCountMZ < 3 && kanCountPZ < 3 && kanCountSZ < 3) {
-         return kan;
+         return ans;
       } else {
-         return this.tiles[kan];
+    	  ans = tile.guessTile(this.tiles[kan]);
+         return ans;
       }
    }
 
-   public void chiUnder(int borrowedTile) {
+   public void chiUnder(int borrowedTile, String discardedTile) {
       Tile tile = new Tile();
+      int x = this.discardedTileParseInt(discardedTile);
+      int subscriptX = -1;
 
       for(int i = 0; i < this.tiles.length; ++i) {
-         if (tile.guessKindNumber(borrowedTile)[0] != 3 && tile.guessKindNumber(this.tiles[i])[0] == tile.guessKindNumber(borrowedTile)[0] && tile.guessKindNumber(this.tiles[i])[1] == tile.guessKindNumber(borrowedTile)[1] - 2) {
+         if (tile.guessKindNumber(borrowedTile)[0] != 3 && tile.guessKindNumber(this.tiles[i])[0] == tile.guessKindNumber(borrowedTile)[0] && tile.guessKindNumber(this.tiles[i])[1] == tile.guessKindNumber(borrowedTile)[1] + 1) {
             for(int j = 0; j < this.tiles.length; ++j) {
-               if (tile.guessKindNumber(this.tiles[i])[0] == tile.guessKindNumber(borrowedTile)[0] && tile.guessKindNumber(this.tiles[i])[1] == tile.guessKindNumber(borrowedTile)[1] - 1) {
-                  for(int k = 0; k < this.furo.length; ++k) {
-                     if (Objects.isNull(this.furo[k])) {
+               if (tile.guessKindNumber(this.tiles[j])[0] == tile.guessKindNumber(borrowedTile)[0] && tile.guessKindNumber(this.tiles[j])[1] == tile.guessKindNumber(borrowedTile)[1] + 2) {
+            	   for(int k = 0; j < this.getTiles().length; k++) {
+            	         if (tile.guessKindNumber(this.getTile(k))[0] == tile.guessKindNumber(x)[0] && tile.guessKindNumber(this.getTile(k))[1] == tile.guessKindNumber(x)[1]) {
+            	            this.setDiscardedTile(this.getTile(k));
+            	            this.setTile(-1, k);
+            	            subscriptX = k;
+            	            break;
+            	         }
+            	      }
+            	   for(int k = 0; k < this.furo.length; k++) {
+                     if (this.furo[k][0]==-1) {
                         this.furo[k][0] = this.tiles[i];
                         this.furo[k][1] = this.tiles[j];
                         this.furo[k][2] = borrowedTile;
                         break;
                      }
+                     this.setTile(borrowedTile, subscriptX);
                   }
                }
             }
@@ -282,18 +313,30 @@ public class Player {
 
    }
 
-   public void chiPen(int borrowedTile) {
+   public void chiPen(int borrowedTile, String discardedTile) {
       Tile tile = new Tile();
+      int x = this.discardedTileParseInt(discardedTile);
+      int subscriptX = -1;
 
-      for(int i = 0; i < this.tiles.length; ++i) {
+      //手配の中からフウロする牌を探してフウロ配列に格納、
+      for(int i = 0; i < this.tiles.length; i++) {
          if (tile.guessKindNumber(borrowedTile)[0] != 3 && tile.guessKindNumber(this.tiles[i])[0] == tile.guessKindNumber(borrowedTile)[0] && tile.guessKindNumber(this.tiles[i])[1] == tile.guessKindNumber(borrowedTile)[1] + 1) {
-            for(int j = 0; j < this.tiles.length; ++j) {
-               if (tile.guessKindNumber(this.tiles[i])[0] == tile.guessKindNumber(borrowedTile)[0] && tile.guessKindNumber(this.tiles[i])[1] == tile.guessKindNumber(borrowedTile)[1] - 1) {
-                  for(int k = 0; k < this.furo.length; ++k) {
-                     if (Objects.isNull(this.furo[k])) {
+            for(int j = 0; j < this.tiles.length; j++) {
+               if (tile.guessKindNumber(this.tiles[j])[0] == tile.guessKindNumber(borrowedTile)[0] && tile.guessKindNumber(this.tiles[j])[1] == tile.guessKindNumber(borrowedTile)[1] - 1) {
+            	   for(int k = 0; j < this.getTiles().length; k++) {
+          	         if (tile.guessKindNumber(this.getTile(k))[0] == tile.guessKindNumber(x)[0] && tile.guessKindNumber(this.getTile(k))[1] == tile.guessKindNumber(x)[1]) {
+          	            this.setDiscardedTile(this.getTile(k));
+          	            this.setTile(-1, k);
+          	            subscriptX = k;
+          	            break;
+          	         }
+          	      }
+            	   for(int k = 0; k < this.furo.length; ++k) {
+                     if (this.furo[k][0]==-1) {
                         this.furo[k][0] = this.tiles[j];
                         this.furo[k][1] = borrowedTile;
                         this.furo[k][2] = this.tiles[i];
+                        this.setTile(borrowedTile, subscriptX);
                         break;
                      }
                   }
@@ -304,18 +347,29 @@ public class Player {
 
    }
 
-   public void chiUpper(int borrowedTile) {
+   public void chiUpper(int borrowedTile, String discardedTile) {
       Tile tile = new Tile();
+      int x = this.discardedTileParseInt(discardedTile);
+      int subscriptX = -1;
 
-      for(int i = 0; i < this.tiles.length; ++i) {
-         if (tile.guessKindNumber(borrowedTile)[0] != 3 && tile.guessKindNumber(this.tiles[i])[0] == tile.guessKindNumber(borrowedTile)[0] && tile.guessKindNumber(this.tiles[i])[1] == tile.guessKindNumber(borrowedTile)[1] + 1) {
-            for(int j = 0; j < this.tiles.length; ++j) {
-               if (tile.guessKindNumber(this.tiles[i])[0] == tile.guessKindNumber(borrowedTile)[0] && tile.guessKindNumber(this.tiles[i])[1] == tile.guessKindNumber(borrowedTile)[1] + 2) {
-                  for(int k = 0; k < this.furo.length; ++k) {
-                     if (Objects.isNull(this.furo[k])) {
+      for(int i = 0; i < this.tiles.length; i++) {
+         if (tile.guessKindNumber(borrowedTile)[0] != 3 && tile.guessKindNumber(this.tiles[i])[0] == tile.guessKindNumber(borrowedTile)[0] && tile.guessKindNumber(this.tiles[i])[1] == tile.guessKindNumber(borrowedTile)[1] - 1) {
+            for(int j = 0; j < this.tiles.length; j++) {
+               if (tile.guessKindNumber(this.tiles[j])[0] == tile.guessKindNumber(borrowedTile)[0] && tile.guessKindNumber(this.tiles[j])[1] == tile.guessKindNumber(borrowedTile)[1] - 2) {
+            	   for(int k = 0; j < this.getTiles().length; k++) {
+          	         if (tile.guessKindNumber(this.getTile(k))[0] == tile.guessKindNumber(x)[0] && tile.guessKindNumber(this.getTile(k))[1] == tile.guessKindNumber(x)[1]) {
+          	            this.setDiscardedTile(this.getTile(k));
+          	            this.setTile(-1, k);
+          	            subscriptX = k;
+          	            break;
+          	         }
+          	      }
+            	   for(int k = 0; k < this.furo.length; ++k) {
+                     if (this.furo[k][0]==-1) {
                         this.furo[k][0] = borrowedTile;
                         this.furo[k][1] = this.tiles[i];
                         this.furo[k][2] = this.tiles[j];
+                        this.setTile(borrowedTile, subscriptX);
                         break;
                      }
                   }
@@ -326,10 +380,13 @@ public class Player {
 
    }
 
-   public void pon(int borrowedTile) {
+   public void pon(int borrowedTile, String discardedTile) {
+	   int x = this.discardedTileParseInt(discardedTile);
+	   
    }
 
-   public void kan(int borrowedTile) {
+   public void kan(int borrowedTile, String discardedTile) {
+	   int x = this.discardedTileParseInt(discardedTile);
    }
 
    public boolean furitenn() {
