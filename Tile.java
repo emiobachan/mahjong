@@ -10,6 +10,7 @@ public class Tile {
    private String[][] hai;
    private int[] pastTile;
    private int[] wampai;
+   private int[] doras;
 
    public Tile() {
       this.hai = new String[][]{this.man, this.pin, this.sou, this.jihai};

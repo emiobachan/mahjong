@@ -381,11 +381,13 @@ public class Player {
    }
 
    public void pon(int borrowedTile, String discardedTile) {
+	   Tile tile = new Tile();
 	   int x = this.discardedTileParseInt(discardedTile);
 	   
    }
 
    public void kan(int borrowedTile, String discardedTile) {
+	   Tile tile = new Tile();
 	   int x = this.discardedTileParseInt(discardedTile);
    }
 

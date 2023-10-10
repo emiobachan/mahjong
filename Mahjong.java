@@ -87,7 +87,7 @@ public class Mahjong {
 					if (mahjong[j].isCalledChiUd()) {
 						mahjong[j].printTiles();
 						System.out.println(mahjong[j].chiCheckUnder(gameTile.guessKindNumber(discardedTileInt))[0] + " " + mahjong[j].chiCheckUnder(gameTile.guessKindNumber(discardedTileInt))[1] + "チーするんかぇ？");
-						System.out.println("するなら捨てる牌を入力しろ/鳴かない場合：Enterキー押下");
+						System.out.println("するなら捨てる牌を入力しな/鳴かない場合：Enterキー押下");
 						calledChiUd = br.readLine();
 						if(!calledChiUd.equals("")) {
 							System.out.println("チーなんだ㌔");
@@ -104,7 +104,7 @@ public class Mahjong {
 					if (mahjong[j].isCalledChiPn()) {
 						mahjong[j].printTiles();
 						System.out.println(mahjong[j].chiCheckPen(gameTile.guessKindNumber(discardedTileInt))[0] + " " + mahjong[j].chiCheckPen(gameTile.guessKindNumber(discardedTileInt))[1] + "チーするんかぇ？");
-						System.out.println("するなら捨てる牌を入力しろ/鳴かない場合：Enterキー押下");
+						System.out.println("するなら捨てる牌を入力しな/鳴かない場合：Enterキー押下");
 						calledChiPn = br.readLine();
 						if(!calledChiPn.equals("")) {
 							System.out.println("チーなんだ㌔");
@@ -121,7 +121,7 @@ public class Mahjong {
 					if (mahjong[j].isCalledChiUp()) {
 						mahjong[j].printTiles();
 						System.out.println(mahjong[j].chiCheckUpper(gameTile.guessKindNumber(discardedTileInt))[0] + " " + mahjong[j].chiCheckUpper(gameTile.guessKindNumber(discardedTileInt))[1] + "チーするんかぇ？");
-						System.out.println("するなら捨てる牌を入力しろ/鳴かない場合：Enterキー押下");
+						System.out.println("するなら捨てる牌を入力しな/鳴かない場合：Enterキー押下");
 						calledChiUp = br.readLine();
 						if(!calledChiPn.equals("")) {
 							System.out.println("チーなんだ㌔");
@@ -138,7 +138,7 @@ public class Mahjong {
 					if (mahjong[j].isCalledPon()) {
 						mahjong[j].printTiles();
 						System.out.println(mahjong[j].ponCheck(gameTile.guessKindNumber(discardedTileInt)) + " ポンするんかぇ？");
-						System.out.println("するなら捨てる牌を入力しろ/鳴かない場合：Enterキー押下");
+						System.out.println("するなら捨てる牌を入力しな/鳴かない場合：Enterキー押下");
 						calledPon = br.readLine();
 						if(!calledPon.equals("")) {
 							System.out.println("ポンなんだ㌔");
@@ -155,7 +155,7 @@ public class Mahjong {
 					if (mahjong[j].isCalledKan()) {
 						mahjong[j].printTiles();
 						System.out.println(mahjong[j].kanCheck(gameTile.guessKindNumber(discardedTileInt)) + " カンするんかぇ？");
-						System.out.println("するなら捨てる牌を入力しろ/鳴かない場合：Enterキー押下");
+						System.out.println("するなら捨てる牌を入力しな/鳴かない場合：Enterキー押下");
 						calledKan = br.readLine();
 						if(!calledKan.equals("")) {
 							System.out.println("カンなんだ㌔!");
